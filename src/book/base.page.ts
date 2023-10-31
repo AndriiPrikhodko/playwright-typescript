@@ -7,10 +7,17 @@ export class BasePage implements IBasePage {
     public locators: locators = {}
     protected readonly page: Page
 
+    /**
+     *
+     * @param page
+     */
     constructor(page: Page) {
         this.page = page
     }
 
+    /**
+     * Initialize page locators
+     */
     async initialize() {
         await Promise.all(
             Object.entries(this.selectors).map(async ([key, value]) =>{

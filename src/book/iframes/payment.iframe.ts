@@ -12,6 +12,7 @@ export default class PaymentDetails extends BasePage {
         close: '.close'
     }
     private readonly iframe
+
     constructor(page: Page) {
         super(page)
         this.iframe = page.frameLocator('iframe')

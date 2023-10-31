@@ -9,6 +9,8 @@ import HomePage from '@book/home.page'
 import * as data from '@test-data/generated/payment-details.ts.json'
 
 const paymentDetails = data.default.default
+const temperatureLowerBound = 34
+
 /**
  * Given customer on https://weathershopper.pythonanywhere.com/
  * When checks the temperature and it is above 34 degrees
@@ -17,9 +19,6 @@ const paymentDetails = data.default.default
  * And pays for goods
  * And see the successful purchase page
  */
-
-const temperatureLowerBound = 34
-
 test('assert customer shop sunscreens', async ({ page }) => {
     const addToCartByName: IgetItem = cheapestItemSearchAddToCart.bind(page)
     await page.goto(router.home)
@@ -44,12 +43,12 @@ test('assert customer shop sunscreens', async ({ page }) => {
     const itemsPage = new ItemListPage(page)
     await itemsPage.initialize()
 
-    const [almond, aloe] = await Promise.all(['SPF-50', 'SPF-30'].
+    const [SPF50, SPF30] = await Promise.all(['SPF-50', 'SPF-30'].
         map(itemName => addToCartByName(itemName)))
 
-    await almond.addToCart.click()
+    await SPF50.addToCart.click()
 
-    await aloe.addToCart.click()
+    await SPF30.addToCart.click()
 
     // transitioning to cart page
     await itemsPage.locators.cart.click()
@@ -61,28 +60,21 @@ test('assert customer shop sunscreens', async ({ page }) => {
     // check that cart contains two items + 1 for description
     expect(await cartPage.locators.itemRow.count()).toEqual(3)
 
-    const firstItem = cartPage.locators.itemRow.nth(1)
-        .locator(cartPage.selectors.cell)
+    const [cartDataSPF50, cartDataSPF30] = await cartPage.parseCartItems()
+    const [cartSPF50dName, cartSPF50Price] = cartDataSPF50
+    const [cartSPF30Name, cartSPF30Price] = cartDataSPF30
 
-    const secondItem = cartPage.locators.itemRow
-        .nth(2).locator(cartPage.selectors.cell)
+    expect(cartSPF50dName.trim()).toEqual(SPF50.name)
+    expect(cartSPF50Price).toEqual(SPF50.price)
+    expect(cartSPF30Name.trim()).toEqual(SPF30.name)
+    expect(cartSPF30Price).toEqual(SPF30.price)
 
-    const [cartName1, cartPrice1] = await firstItem.allTextContents()
-    const [cartName2, cartPrice2] = await secondItem.allTextContents()
-    const [cartPrice1Number] = fetchNumFromString([cartPrice1])
-    const [cartPrice2Number] = fetchNumFromString([cartPrice2])
-
-    expect(cartName1.trim()).toEqual(almond.name)
-    expect(cartPrice1Number).toEqual(almond.price)
-    expect(cartName2.trim()).toEqual(aloe.name)
-    expect(cartPrice2Number).toEqual(aloe.price)
-
-    const total = almond.price + aloe.price
+    const total = SPF50.price + SPF30.price
     const totalTxt = await cartPage.locators.total.allInnerTexts()
     const [totalNumber] = fetchNumFromString(totalTxt)
 
     expect(totalNumber).toEqual(total)
-    
+
     await cartPage.locators.paymentButton.click()
 
     // initializing payment iframe
@@ -99,7 +91,7 @@ test('assert customer shop sunscreens', async ({ page }) => {
     // this could be a bug should be clarified with PO
     const isZipCodePresent = await paymentIframe.locators.zipCode.
         isVisible()
-    
+
     // eslint-disable-next-line playwright/no-conditional-in-test
     if (isZipCodePresent) await paymentIframe.locators.zipCode
         .fill(paymentDetails.zipCode)
