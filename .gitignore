@@ -3,3 +3,5 @@ test-results
 .vscode
 !src/test-data/generated/.gitkeep
 src/test-data/generated/*
+.DS_Store
+.env

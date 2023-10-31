@@ -1,5 +1,4 @@
 import { PlaywrightTestConfig } from '@playwright/test'
-// import 'dotenv/config'
 
 const config: PlaywrightTestConfig = {
     testDir: '.',

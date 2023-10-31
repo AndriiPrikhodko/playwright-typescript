@@ -21,7 +21,6 @@
     "module": "module",
     "include": [
         "./src/",
-        "global.d.ts",
         "*/*.json"
     ],
     "exclude": [
