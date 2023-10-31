@@ -3,7 +3,7 @@ import { selectors, locators } from '@myTypes/book'
 import { fetchNumFromString } from '../utilities/text-processor'
 
 /**
- * 
+ *
  * @returns promise of array of cart item name and price
  */
 async function parseCartItems(): Promise<(string[] | number[])[]> {
