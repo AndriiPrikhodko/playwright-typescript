@@ -1,0 +1,37 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "Test project",
+  "main": "./src/index.ts",
+  "baseUrl": ".",
+  "scripts": {
+    "pretest": "npm run data",
+    "test": "npx playwright test",
+    "lint": "./node_modules/.bin/eslint --ext .ts ./",
+    "lint:fix": "./node_modules/.bin/eslint --fix --ext .ts ./",
+    "data": "ts-node-esm src/utilities/data-generator.ts"
+  },
+  "keywords": [],
+  "author": "Andrii Prykhodko",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
+    "@playwright/test": "^1.39.0",
+    "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "eslint-plugin-playwright": "^0.18.0",
+    "playwright": "^1.39.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/ramda": "^0.29.7",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.52.0",
+    "expect-playwright": "^0.8.0",
+    "moment": "^2.29.4",
+    "ramda": "^0.29.1"
+  }
+}
