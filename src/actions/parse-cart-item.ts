@@ -1,16 +1,16 @@
 import { Locator } from '@playwright/test'
-import { selectors, locators } from '@myTypes/book'
+import { ICartSelectors, ICartLocators } from '@myTypes/book'
 import { fetchNumFromString } from '../utilities/text-processor'
 
 /**
  *
  * @returns promise of array of cart item name and price
  */
-async function parseCartItems(): Promise<(string[] | number[])[]> {
-    const locators: locators = this.locators
-    const selectors: selectors = this.selectors
+async function parseCartItems(): Promise<[string, number][]> {
+    const locators: ICartLocators = this.locators
+    const selectors: ICartSelectors = this.selectors
     const itemLocators: Locator [] = []
-    const contentPricesInNum = []
+    const contentPricesInNum:[string, number][]= []
 
     const count: number = await locators.itemRow.count()
 
@@ -24,7 +24,9 @@ async function parseCartItems(): Promise<(string[] | number[])[]> {
     )
 
     for(let i = 0; i < contentByRCells.length; i ++ ) {
+        // pices stored in second elemented of embeded array
         const [price] = fetchNumFromString([contentByRCells[i][1]])
+
         contentPricesInNum[i] = [contentByRCells[i][0], price]
     }
     return contentPricesInNum

@@ -16,6 +16,7 @@ module.exports = {
         ecmaVersion: 8,
     },
     rules: {
+        "quotes": [2, "single", { "avoidEscape": true }],
         "playwright/no-eval": 0,
         "no-useless-catch": 1,
         "playwright/no-skipped-test": 0,
