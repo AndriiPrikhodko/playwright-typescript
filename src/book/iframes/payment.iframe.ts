@@ -1,8 +1,9 @@
-import { Page } from "playwright/test"
+import { Page, FrameLocator } from "playwright/test"
 import { BasePage } from "@book/base.page"
+import { IIFrameDetailsSelectors } from "../../types/book"
 
 export default class PaymentDetails extends BasePage {
-    public readonly selectors = {
+    public readonly selectors: IIFrameDetailsSelectors = {
         email: '#email',
         cardNumber: '#card_number',
         expDate: '#cc-exp',
@@ -11,7 +12,7 @@ export default class PaymentDetails extends BasePage {
         payButton: '#submitButton',
         close: '.close'
     }
-    private readonly iframe
+    private readonly iframe: FrameLocator
 
     constructor(page: Page) {
         super(page)

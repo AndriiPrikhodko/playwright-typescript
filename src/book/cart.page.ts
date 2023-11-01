@@ -1,17 +1,17 @@
-import { IBasePage } from "../types/book"
+import { IBasePage, ICartSelectors, locators, ICartLocators } from "../types/book"
 import { BasePage } from "./base.page"
 import PaymentDetails from "./iframes/payment.iframe"
 import parseCartItems from "@actions/parse-cart-item"
 
 export default class CartPage extends BasePage {
-    public selectors =  {
+    public selectors: ICartSelectors =  {
         itemRow: "table tr",
         cell: 'td',
         total: '#total',
         paymentButton: 'button[type=submit]'
     }
 
-    public parseCartItems = parseCartItems.bind(this)
+    public parseCartItems:() => Promise<[string, number][]> = parseCartItems.bind(this)
 
     /**
      *

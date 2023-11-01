@@ -1,9 +1,13 @@
+import { IRouter } from "../types/book"
+
 const baseUrl = 'https://weathershopper.pythonanywhere.com'
 
-export default {
+const routs: IRouter = {
     home: `${baseUrl}`,
     moisturizer: `${baseUrl}/moisturizer`,
     sunscreens: `${baseUrl}/sunscreen`,
     cart: `${baseUrl}/cart`,
     confirmation: `${baseUrl}/confirmation`
 }
+
+export default routs

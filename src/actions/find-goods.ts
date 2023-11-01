@@ -1,5 +1,4 @@
 import { type Page} from '@playwright/test'
-import itemsListPage from '@book/items-list.page'
 import { fetchNumFromString } from '@utils/text-processor'
 import { Iitem } from '@myTypes/actions'
 
@@ -24,8 +23,8 @@ async function cheapestItemSearchAddToCart(
     searchTerm: string,
 ): Promise<Iitem>
 {
-    const page = this as Page
-    const itemPage = new itemsListPage(page)
+    const page = this.page as Page
+    const itemPage = this
 
     // get all items that contain searched term
     const items = page.locator(itemPage.selectors.items, {hasText: searchTerm})
@@ -39,13 +38,13 @@ async function cheapestItemSearchAddToCart(
             items => items.map(element => element.textContent)
         )
 
-    const priceNumbers = fetchNumFromString(prices as string[])
+    const priceNumbers = fetchNumFromString(prices)
 
     const minElement = minIndex(priceNumbers)
 
     const cheapestName = await items.nth(minElement).
         locator(itemPage.selectors.itemsName).
-        evaluate(itemName => itemName.textContent?.trim()) as string
+        evaluate(itemName => itemName.textContent?.trim())
 
     return {
         name: cheapestName,

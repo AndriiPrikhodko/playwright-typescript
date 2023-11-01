@@ -1,7 +1,8 @@
+import { IHomeSelectors } from "../types/book"
 import { BasePage } from "./base.page"
 
 export default class HomePage extends BasePage {
-    public selectors =  {
+    public selectors: IHomeSelectors =  {
         title: 'h2',
         temperatureBar: '#temperature',
         moisturizerButton: 'a[href="/moisturizer"]',

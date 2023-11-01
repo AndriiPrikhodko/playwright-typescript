@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test'
-import cheapestItemSearchAddToCart from '@actions/find-goods'
-import ItemListPage from '@book/items-list.page'
-import CartPage from "@book/cart.page"
-import { IgetItem } from '@myTypes/actions'
+import  {
+    HomePage, 
+    ItemListPage, 
+    CartPage
+} from '@book/book.facade'
 import router from '@book/router'
 import { fetchNumFromString } from '@utils/text-processor'
-import HomePage from '@book/home.page'
+
 import * as data from '@test-data/generated/payment-details.ts.json'
 
 const paymentDetails = data.default.default
@@ -14,13 +15,12 @@ const temperatureUpperBound = 19
 /**
  * Given customer on https://weathershopper.pythonanywhere.com/
  * When checks the temperature and it is below 19 degrees
- * Then Shop for moisturizers
- * And proceed to cart
+ * Then shops for moisturizers
+ * And proceeds to cart
  * And pays for goods
- * And see the successful purchase page
+ * And sees the successful purchase page
  */
 test('assert customer shop moisturizers', async ({ page }) => {
-    const addToCartByName: IgetItem = cheapestItemSearchAddToCart.bind(page)
     await page.goto(router.home)
     await page.waitForURL(router.home)
 
@@ -44,7 +44,7 @@ test('assert customer shop moisturizers', async ({ page }) => {
     await itemsPage.initialize()
 
     const [almond, aloe] = await Promise.all(['almond', 'aloe'].map(itemName =>
-        addToCartByName(itemName)))
+        itemsPage.cheapestItemSearchAddToCart(itemName)))
 
     await almond.addToCart.click()
 
