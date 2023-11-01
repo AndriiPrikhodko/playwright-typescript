@@ -24,16 +24,15 @@ async function cheapestItemSearchAddToCart(
 ): Promise<Iitem>
 {
     const page = this.page as Page
-    const itemPage = this
 
     // get all items that contain searched term
-    const items = page.locator(itemPage.selectors.items, {hasText: searchTerm})
+    const items = page.locator(this.selectors.items, {hasText: searchTerm})
 
     // wait until at least first item is visible
     await items.first().waitFor()
 
     // fetch price fields from found items
-    const prices = await items.locator(itemPage.selectors.itemsPrice)
+    const prices = await items.locator(this.selectors.itemsPrice)
         .evaluateAll(
             items => items.map(element => element.textContent)
         )
@@ -43,14 +42,14 @@ async function cheapestItemSearchAddToCart(
     const minElement = minIndex(priceNumbers)
 
     const cheapestName = await items.nth(minElement).
-        locator(itemPage.selectors.itemsName).
+        locator(this.selectors.itemsName).
         evaluate(itemName => itemName.textContent?.trim())
 
     return {
         name: cheapestName,
         price:  priceNumbers[minElement],
         addToCart: items.nth(minElement).
-            locator(itemPage.selectors.itemsAddToCart)
+            locator(this.selectors.itemsAddToCart)
     }
 }
 

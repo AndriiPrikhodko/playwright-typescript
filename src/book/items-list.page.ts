@@ -13,6 +13,6 @@ export default class ItemListPage extends BasePage {
         itemsPrice: `//p[not(@class)]`
     }
 
-    public cheapestItemSearchAddToCart:(searchTerm: string) => Promise<Iitem> = 
+    public cheapestItemSearchAddToCart:(searchTerm: string) => Promise<Iitem> =
         cheapestItemSearchAddToCart.bind(this)
 }

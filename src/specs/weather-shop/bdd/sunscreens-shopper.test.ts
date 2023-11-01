@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import  {
-    HomePage, 
-    ItemListPage, 
+    HomePage,
+    ItemListPage,
     CartPage
 } from '@book/book.facade'
 import router from '@book/router'
