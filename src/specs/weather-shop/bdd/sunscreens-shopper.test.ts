@@ -34,7 +34,7 @@ test('assert customer shop sunscreens', async ({ page }) => {
     const [temperatureReadingNumber] = fetchNumFromString(temperatureReading)
     expect(temperatureReadingNumber).toBeGreaterThan(temperatureLowerBound)
 
-    // transitioning to moisturizer page
+    // transitioning to sunscreen page
     await homePage.
         locators.sunscreenButton.click()
     await page.waitForURL(router.sunscreens)
