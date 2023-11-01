@@ -10,7 +10,7 @@ async function parseCartItems(): Promise<[string, number][]> {
     const locators: ICartLocators = this.locators
     const selectors: ICartSelectors = this.selectors
     const itemLocators: Locator [] = []
-    const contentPricesInNum:(string | number)[][]= []
+    const contentPricesInNum:[string, number][]= []
 
     const count: number = await locators.itemRow.count()
 
