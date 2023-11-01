@@ -1,4 +1,4 @@
-import { IRouter } from "../types/book"
+import { IRouter } from '../types/book'
 
 const baseUrl = 'https://weathershopper.pythonanywhere.com'
 

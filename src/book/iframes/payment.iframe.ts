@@ -1,6 +1,6 @@
-import { Page, FrameLocator } from "playwright/test"
-import { BasePage } from "@book/base.page"
-import { IIFrameDetailsSelectors } from "../../types/book"
+import { Page, FrameLocator } from 'playwright/test'
+import { BasePage } from '@book/base.page'
+import { IIFrameDetailsSelectors } from '../../types/book'
 
 export default class PaymentDetails extends BasePage {
     public readonly selectors: IIFrameDetailsSelectors = {

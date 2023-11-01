@@ -1,11 +1,11 @@
-import { IBasePage, ICartSelectors } from "@myTypes/book"
-import { BasePage } from "@book/base.page"
-import PaymentDetails from "@book/iframes/payment.iframe"
-import parseCartItems from "@actions/parse-cart-item"
+import { IBasePage, ICartSelectors } from '@myTypes/book'
+import { BasePage } from '@book/base.page'
+import PaymentDetails from '@book/iframes/payment.iframe'
+import parseCartItems from '@actions/parse-cart-item'
 
 export default class CartPage extends BasePage {
     public selectors: ICartSelectors =  {
-        itemRow: "table tr",
+        itemRow: 'table tr',
         cell: 'td',
         total: '#total',
         paymentButton: 'button[type=submit]'
