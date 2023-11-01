@@ -1,5 +1,5 @@
-import { IHomeSelectors } from "../types/book"
-import { BasePage } from "./base.page"
+import { IHomeSelectors } from "@myTypes/book"
+import { BasePage } from "@book/base.page"
 
 export default class HomePage extends BasePage {
     public selectors: IHomeSelectors =  {

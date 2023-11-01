@@ -1,6 +1,6 @@
 import { IBasePage, ICartSelectors } from "@myTypes/book"
-import { BasePage } from "./base.page"
-import PaymentDetails from "./iframes/payment.iframe"
+import { BasePage } from "@book/base.page"
+import PaymentDetails from "@book/iframes/payment.iframe"
 import parseCartItems from "@actions/parse-cart-item"
 
 export default class CartPage extends BasePage {
