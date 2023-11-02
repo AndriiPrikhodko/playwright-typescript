@@ -1,4 +1,5 @@
 import type { Locator } from '@playwright/test'
+import { Iitem } from './actions'
 
 interface selectors {
     [key: string]: string
@@ -11,7 +12,10 @@ interface locators {
 export interface IBasePage {
     selectors: selectors;
     locators: locators;
-    initialize(): Promise<void>
+    transition: {
+        [key: string]: () => Promise<void>
+    }
+    initialize(): Promise<void[]>
 }
 
 interface ICartSelectors extends selectors {
@@ -30,7 +34,7 @@ interface IHomeSelectors extends selectors {
 
 interface IItemsSelectors extends selectors {
     title: string,
-    cart: string,
+    cartButton: string,
     items: string,
     itemsName: string,
     itemsAddToCart: string,
@@ -62,4 +66,28 @@ interface IConfirmSelectors extends selectors {
 
 type ICartLocators = {
     [K in keyof ICartSelectors]: Locator
+  }
+
+interface ICartPage extends IBasePage {
+    selectors: ICartSelectors
+    transition: {
+        [key: string]: () => Promise<void>
+    }
+    getPaymentDetailsIframe(): Promise<IBasePage>
+    parseCartItems:() => Promise<[string, number][]>
+  }
+
+  interface IHomePage extends IBasePage {
+    selectors: IHomeSelectors
+    transition: {
+        [key: string]: () => Promise<void>
+    }
+  }
+
+  interface IItemsPage extends IBasePage {
+    selectors: IItemsSelectors
+    transition: {
+        [key: string]: () => Promise<void>
+    }
+    cheapestItemSearchAddToCart:(searchTerm: string) => Promise<Iitem>
   }

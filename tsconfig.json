@@ -5,7 +5,7 @@
     "paths": {
         "@book/*": ["./src/book/*"],
         "@myTypes/*": ["./src/types/*"],
-        "@actions/*": ["./src/actions/*"],
+        "@actions/*": ["src/book/pages/actions/*"],
         "@utils/*": ["./src/utilities/*"],
         "@test-data/*": ["./src/test-data/*"]
       },

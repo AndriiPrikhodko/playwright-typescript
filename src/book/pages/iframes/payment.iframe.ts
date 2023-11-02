@@ -1,6 +1,6 @@
 import { Page, FrameLocator } from 'playwright/test'
 import { BasePage } from '@book/base.page'
-import { IIFrameDetailsSelectors } from '../../types/book'
+import { IIFrameDetailsSelectors } from '../../../types/book'
 
 export default class PaymentDetails extends BasePage {
     public readonly selectors: IIFrameDetailsSelectors = {
@@ -21,7 +21,7 @@ export default class PaymentDetails extends BasePage {
     }
 
     async initialize() {
-        await Promise.all(
+        return Promise.all(
             Object.entries(this.selectors).map(async ([key, value]) =>{
                 this.locators[key] = this.iframe.locator(value)
             })

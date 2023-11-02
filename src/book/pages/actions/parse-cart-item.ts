@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test'
 import { ICartSelectors, ICartLocators } from '@myTypes/book'
-import { fetchNumFromString } from '../utilities/text-processor'
+import { fetchNumFromString } from '../../../utilities/text-processor'
 
 /**
  *
@@ -24,7 +24,7 @@ async function parseCartItems(): Promise<[string, number][]> {
     )
 
     for(let i = 0; i < contentByRCells.length; i ++ ) {
-        // pices stored in second elemented of embeded array
+        // prices are stored in the second element of the embedded array
         const [price] = fetchNumFromString([contentByRCells[i][1]])
 
         contentPricesInNum[i] = [contentByRCells[i][0], price]
