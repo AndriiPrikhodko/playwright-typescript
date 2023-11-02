@@ -84,6 +84,7 @@ export default class StateMachine {
 
     public async transition(from: State, to: State) {
         if(this.validateTransition(from, to)) {
+            // LSP transition method invoked on different classes
             await this.currentPage.transition[to]()
             await this.page.waitForLoadState('domcontentloaded')
             this.currentState = this.page.url()
