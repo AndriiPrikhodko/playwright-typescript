@@ -1,17 +1,16 @@
 import { test, expect } from '@playwright/test'
 import  StateMachine from '@book/transitions/stateMachine'
-import router from '@book/transitions/router'
 import { fetchNumFromString } from '@utils/text-processor'
 import * as data from '@test-data/generated/payment-details.ts.json'
-import { 
+import {
     IHomePage,
     IItemsPage,
     ICartPage
- } from '@myTypes/book'
+} from '@myTypes/book'
 
 const paymentDetails = data.default.default
 const temperatureLowerBound = 34
-type sunscreen = ['SPF-50', 'SPF-30']
+type sunscreen = 'SPF-50' | 'SPF-30'
 
 /**
  * Given customer on https://weathershopper.pythonanywhere.com/
@@ -38,8 +37,10 @@ test('assert customer shoping sunscreens', async ({ page }) => {
     await expect(page.url()).toEqual(stateMachine.getCurrentState())
     await sunscreenPage.initialize()
 
-    const [SPF50, SPF30] = await Promise.all((['SPF-50', 'SPF-30'] as sunscreen).
-        map(itemName => sunscreenPage.cheapestItemSearchAddToCart(itemName)))
+    const [SPF50, SPF30] = await Promise.all(
+        (['SPF-30', 'SPF-50'] as [sunscreen, sunscreen]).
+            map(itemName => sunscreenPage.cheapestItemSearchAddToCart(itemName))
+    )
 
     await SPF50.addToCart.click()
 

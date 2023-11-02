@@ -6,7 +6,7 @@ export class BasePage implements IBasePage {
     public readonly selectors: selectors = {}
     public locators: locators = {}
     public transition: { [
-        key: string]: () => Promise<void> 
+        key: string]: () => Promise<void>
     }
     protected readonly page: Page
 

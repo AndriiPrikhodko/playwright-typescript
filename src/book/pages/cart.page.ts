@@ -1,8 +1,7 @@
 import { IBasePage,
-    ICartLocators,
     ICartPage,
-    ICartSelectors, 
-    locators} from '@myTypes/book'
+    ICartSelectors,
+} from '@myTypes/book'
 import { BasePage } from '@book/base.page'
 import PaymentDetails from '@book/pages/iframes/payment.iframe'
 import parseCartItems from '@actions/parse-cart-item'
