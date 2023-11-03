@@ -1,41 +1,65 @@
 import { Page } from 'playwright/test'
 import * as pages from '../book.facade'
 import router from './router'
-import { IHomePage, ICartPage, IItemsPage, IBasePage } from '@myTypes/book'
+import { IHomePage, ICartPage, IItemsPage, IBasePage, State }
+    from '@myTypes/book'
+import * as transitionDiagram from './valid-transition.diagram.json'
 
-type State = 'home' | 'moisturizer' | 'sunscreens' | 'cart' | 'confirmation';
-type currentState = string | undefined
 type statePages = IHomePage | ICartPage | IItemsPage | IBasePage
 
-interface IStates {
-    home: typeof pages.HomePage,
-    moisturizer: typeof pages.ItemListPage,
-    sunscreens: typeof pages.ItemListPage,
-    cart: typeof pages.CartPage,
-    confirmation: typeof pages.confirmationPage
+interface IStateMachine {
+    states: {
+        home: typeof pages.HomePage,
+        moisturizer: typeof pages.ItemListPage,
+        sunscreens: typeof pages.ItemListPage,
+        cart: typeof pages.CartPage,
+        confirmation: typeof pages.confirmationPage
+    }
+
+    /**
+     *
+     * @returns current state
+     */
+    getCurrentState: () => string
+
+    /**
+     *
+     * @param state accepts initial test state url
+     * @returns init state page
+     */
+    initialize:(state: string) => Promise<statePages>
+
+    /**
+     *
+     * @param from current state
+     * @param to target state
+     * @returns target state page
+     *
+     * ***Usage***
+     * ```ts
+     * stateMachine.transition('a', 'b')
+     * ```
+     * validate that it is a valid transition for a defined state machine
+     * and performs the transition
+     */
+    transition:(from: State, to: State) => Promise<statePages>
 }
 
-export default class StateMachine {
-    public states: IStates = {
+export default class StateMachine implements IStateMachine {
+    private currentState: string | undefined = undefined
+    private readonly routes = router
+    private currentPage: statePages
+    private validTransitions = transitionDiagram.default
+
+    protected readonly page: Page
+
+    public states: IStateMachine['states'] = {
         home: pages.HomePage,
         moisturizer: pages.ItemListPage,
         sunscreens: pages.ItemListPage,
         cart: pages.CartPage,
         confirmation: pages.confirmationPage
     }
-
-    private validTransitions = {
-        home: ['moisturizer', 'sunscreens'],
-        moisturizer: ['cart'],
-        sunscreens: ['cart'],
-        cart: ['confirmation'],
-        confirmation: [],
-    }
-
-    private currentState: currentState = undefined
-    protected readonly page: Page
-    private routes = router
-    private currentPage: statePages
 
     constructor(page: Page) {
         this.page = page
@@ -46,7 +70,7 @@ export default class StateMachine {
      *
      * @param from state
      * @param to state
-     * @returns true if transition is valid
+     * @returns true if transition is valid and error otherwise
      */
     private validateTransition(from: State, to: State): boolean {
         if (this.validTransitions[from].includes(to) &&
@@ -61,12 +85,7 @@ export default class StateMachine {
         return this.currentState
     }
 
-    /**
-     *
-     * @param state accepts initial test state url
-     * @returns current url
-     */
-    async initialize(state: string) {
+    async initialize(state: string): Promise<statePages> {
         if(this.currentState === undefined &&
             Object(this.routes).hasOwnProperty(state)) {
             await this.page.goto(this.routes[state])

@@ -28,7 +28,6 @@ test('assert customer shop moisturizers', async ({ page }) => {
     const [temperatureReadingNumber] = fetchNumFromString(temperatureReading)
     expect(temperatureReadingNumber).toBeLessThan(temperatureUpperBound)
 
-    // transitioning to moisturizer page
     const moisturizerPage = await stateMachine.
         transition('home', 'moisturizer') as IItemsPage
     await expect(page.url()).toEqual(stateMachine.getCurrentState())
@@ -41,7 +40,6 @@ test('assert customer shop moisturizers', async ({ page }) => {
 
     await aloe.addToCart.click()
 
-    // transitioning to cart page
     const cartPage = await stateMachine.
         transition('moisturizer', 'cart') as ICartPage
     await expect(page.url()).toEqual(stateMachine.getCurrentState())

@@ -1,0 +1,7 @@
+{
+    "home": ["moisturizer", "sunscreens"],
+    "moisturizer": ["cart"],
+    "sunscreens": ["cart"],
+    "cart": ["confirmation"],
+    "confirmation": []
+}
