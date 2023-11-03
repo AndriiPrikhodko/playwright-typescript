@@ -1,5 +1,6 @@
-import { IBasePage,
+import {
     ICartPage,
+    IPaymentIframe,
 } from '@myTypes/book'
 import { BasePage } from '@book/base.page'
 import PaymentDetails from '@book/pages/iframes/payment.iframe'
@@ -7,7 +8,7 @@ import parseCartItems from '@actions/parse-cart-item'
 import goToConfirmed from '@actions/transitions/cart/confirmed'
 
 export default class CartPage extends BasePage implements ICartPage {
-    private paymentDetailsIFrame: IBasePage
+    private paymentDetailsIFrame: IPaymentIframe
     private confirmation (): () => Promise<void> {
         this.getPaymentDetailsIframe()
         return goToConfirmed.confirmation.bind(this.paymentDetailsIFrame)

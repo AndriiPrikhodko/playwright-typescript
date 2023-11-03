@@ -6,14 +6,11 @@ type State = 'home' | 'moisturizer' | 'sunscreens' | 'cart' | 'confirmation';
 interface selectors {
     [key: string]: string
 }
-
-interface locators {
-    [key: string]: Locator
-}
+type locators = Record<string, Locator>
 
 export interface IBasePage {
     selectors: selectors;
-    locators: locators;
+    locators: locators
     transition: {
         [key in State]?: () => Promise<void>
     }
@@ -29,25 +26,6 @@ interface ICartSelectors extends selectors {
     cell: string,
     total: string,
     paymentButton: string
-}
-
-interface IItemsSelectors extends selectors {
-    title: string,
-    cartButton: string,
-    items: string,
-    itemsName: string,
-    itemsAddToCart: string,
-    itemsPrice: string
-}
-
-interface IIFrameDetailsSelectors extends selectors {
-    email: string,
-    cardNumber: string,
-    expDate: string,
-    CVC: string,
-    zipCode: string,
-    payButton: string,
-    close: string
 }
 
 interface IRouter {
@@ -74,6 +52,11 @@ interface ICartPage extends IBasePage {
         total: string,
         paymentButton: string
     }
+
+    locators: locators | {
+        [key in keyof ICartPage['selectors']]: Locator
+    }
+
     transition: {
         [key in State & 'confirmation']:
             () => Promise<void>
@@ -87,7 +70,7 @@ interface ICartPage extends IBasePage {
      *
      * `email`, `cardNumber`, `expDate`, `CVC`, `zipCode`, `close`
      */
-    getPaymentDetailsIframe(): Promise<IBasePage>
+    getPaymentDetailsIframe(): Promise<IPaymentIframe>
 
     /**
      *
@@ -104,6 +87,10 @@ interface ICartPage extends IBasePage {
         sunscreenButton: string
     }
 
+    locators: locators | {
+        [key in keyof IHomePage['selectors']]: Locator
+    }
+
     transition: {
         [key in ('moisturizer' | 'sunscreens') & State]:
             () => Promise<void>
@@ -111,7 +98,18 @@ interface ICartPage extends IBasePage {
   }
 
   interface IItemsPage extends IBasePage {
-    selectors: IItemsSelectors
+    selectors: {
+        title: string,
+        cartButton: string,
+        items: string,
+        itemsName: string,
+        itemsAddToCart: string,
+        itemsPrice: string
+    }
+
+    locators: locators | {
+        [key in keyof IItemsPage['selectors']]: Locator
+    }
     /**
      * @key must be called as target state
      * @value async action required for transition
@@ -127,4 +125,23 @@ interface ICartPage extends IBasePage {
      * @returns object {`name`,`price`,`locator`}
      */
     cheapestItemSearchAddToCart:(searchTerm: string) => Promise<Iitem>
+  }
+
+  interface IPaymentIframe {
+    selectors: {
+        email: string,
+        cardNumber: string,
+        expDate: string,
+        CVC: string,
+        zipCode: string,
+        payButton: string,
+        close: string
+    }
+
+    locators: locators | {
+            [key in keyof IPaymentIframe['selectors']]: Locator
+        }
+
+
+    initialize: () => Promise<void[]>
   }
