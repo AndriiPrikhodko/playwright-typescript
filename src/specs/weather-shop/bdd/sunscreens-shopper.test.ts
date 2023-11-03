@@ -7,8 +7,9 @@ import {
     IItemsPage,
     ICartPage
 } from '@myTypes/book'
+import { IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default
+const paymentDetails = data.default.default as IDataPaymentValid
 const temperatureLowerBound = 34
 type sunscreen = 'SPF-50' | 'SPF-30'
 

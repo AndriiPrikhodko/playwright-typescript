@@ -3,9 +3,10 @@ import StateMachine from '@book/transitions/stateMachine'
 import { fetchNumFromString } from '@utils/text-processor'
 
 import * as data from '@test-data/generated/payment-details.ts.json'
-import { ICartPage, IHomePage, IItemsPage } from '../../../types/book'
+import { ICartPage, IHomePage, IItemsPage } from '@myTypes/book'
+import { type IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default
+const paymentDetails = data.default.default as IDataPaymentValid
 const temperatureUpperBound = 19
 
 /**
