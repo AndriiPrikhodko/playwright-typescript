@@ -1,15 +1,12 @@
 import { test, expect } from '@playwright/test'
-import  {
-    HomePage,
-    ItemListPage,
-    CartPage
-} from '@book/book.facade'
-import router from '@book/router'
+import StateMachine from '@book/transitions/stateMachine'
 import { fetchNumFromString } from '@utils/text-processor'
 
 import * as data from '@test-data/generated/payment-details.ts.json'
+import { ICartPage, IHomePage, IItemsPage } from '@myTypes/book'
+import { type IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default
+const paymentDetails = data.default.default as IDataPaymentValid
 const temperatureUpperBound = 19
 
 /**
@@ -21,13 +18,10 @@ const temperatureUpperBound = 19
  * And sees the successful purchase page
  */
 test('assert customer shop moisturizers', async ({ page }) => {
-    await page.goto(router.home)
-    await page.waitForURL(router.home)
-
-    const homePage = new HomePage(page)
+    const stateMachine = new StateMachine(page)
+    const homePage = await stateMachine.initialize('home') as IHomePage
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
     await homePage.initialize()
-
-    await homePage.locators.temperatureBar.waitFor()
 
     const temperatureReading = await homePage.
         locators.temperatureBar.allInnerTexts()
@@ -35,26 +29,21 @@ test('assert customer shop moisturizers', async ({ page }) => {
     const [temperatureReadingNumber] = fetchNumFromString(temperatureReading)
     expect(temperatureReadingNumber).toBeLessThan(temperatureUpperBound)
 
-    // transitioning to moisturizer page
-    await homePage.
-        locators.moisturizerButton.click()
-    await page.waitForURL(router.moisturizer)
-
-    const itemsPage = new ItemListPage(page)
-    await itemsPage.initialize()
+    const moisturizerPage = await stateMachine.
+        transition('home', 'moisturizer') as IItemsPage
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
+    await moisturizerPage.initialize()
 
     const [almond, aloe] = await Promise.all(['almond', 'aloe'].map(itemName =>
-        itemsPage.cheapestItemSearchAddToCart(itemName)))
+        moisturizerPage.cheapestItemSearchAddToCart(itemName)))
 
     await almond.addToCart.click()
 
     await aloe.addToCart.click()
 
-    // transitioning to cart page
-    await itemsPage.locators.cart.click()
-    await page.waitForURL(router.cart)
-
-    const cartPage = new CartPage(page)
+    const cartPage = await stateMachine.
+        transition('moisturizer', 'cart') as ICartPage
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
     await cartPage.initialize()
 
     // check that cart contains two items + 1 for description
@@ -85,7 +74,7 @@ test('assert customer shop moisturizers', async ({ page }) => {
     await paymentIframe.locators.cardNumber.
         fill(paymentDetails.creditCardNumber)
     await paymentIframe.locators.expDate.
-        fill(paymentDetails.experationDate)
+        fill(paymentDetails.expirationDate)
     await paymentIframe.locators.CVC.fill(paymentDetails.CVC)
 
     // this could be a bug should be clarified with PO
@@ -96,6 +85,6 @@ test('assert customer shop moisturizers', async ({ page }) => {
     if (isZipCodePresent) await paymentIframe.locators.zipCode
         .fill(paymentDetails.zipCode)
 
-    await paymentIframe.locators.payButton.click()
-    await page.waitForURL(router.confirmation)
+    await stateMachine.transition('cart', 'confirmation')
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
 })

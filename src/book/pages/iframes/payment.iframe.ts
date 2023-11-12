@@ -1,9 +1,12 @@
 import { Page, FrameLocator } from 'playwright/test'
 import { BasePage } from '@book/base.page'
-import { IIFrameDetailsSelectors } from '../../types/book'
+import { IPaymentIframe } from '@myTypes/book'
 
-export default class PaymentDetails extends BasePage {
-    public readonly selectors: IIFrameDetailsSelectors = {
+export default class PaymentDetails extends BasePage implements IPaymentIframe {
+    private readonly iframe: FrameLocator
+    private readonly iFrameSelector = 'iframe'
+
+    public readonly selectors = {
         email: '#email',
         cardNumber: '#card_number',
         expDate: '#cc-exp',
@@ -12,8 +15,6 @@ export default class PaymentDetails extends BasePage {
         payButton: '#submitButton',
         close: '.close'
     }
-    private readonly iframe: FrameLocator
-    private readonly iFrameSelector = 'iframe'
 
     constructor(page: Page) {
         super(page)
@@ -21,7 +22,7 @@ export default class PaymentDetails extends BasePage {
     }
 
     async initialize() {
-        await Promise.all(
+        return Promise.all(
             Object.entries(this.selectors).map(async ([key, value]) =>{
                 this.locators[key] = this.iframe.locator(value)
             })

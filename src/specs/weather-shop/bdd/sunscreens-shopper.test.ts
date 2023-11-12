@@ -1,15 +1,17 @@
 import { test, expect } from '@playwright/test'
-import  {
-    HomePage,
-    ItemListPage,
-    CartPage
-} from '@book/book.facade'
-import router from '@book/router'
+import  StateMachine from '@book/transitions/stateMachine'
 import { fetchNumFromString } from '@utils/text-processor'
 import * as data from '@test-data/generated/payment-details.ts.json'
+import {
+    IHomePage,
+    IItemsPage,
+    ICartPage
+} from '@myTypes/book'
+import { IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default
+const paymentDetails = data.default.default as IDataPaymentValid
 const temperatureLowerBound = 34
+type sunscreen = 'SPF-50' | 'SPF-30'
 
 /**
  * Given customer on https://weathershopper.pythonanywhere.com/
@@ -19,14 +21,10 @@ const temperatureLowerBound = 34
  * And pays for goods
  * And sees the successful purchase page
  */
-test('assert customer shop sunscreens', async ({ page }) => {
-    await page.goto(router.home)
-    await page.waitForURL(router.home)
-
-    const homePage = new HomePage(page)
+test('assert customer shoping sunscreens', async ({ page }) => {
+    const stateMachine = new StateMachine(page)
+    const homePage = await stateMachine.initialize('home') as IHomePage
     await homePage.initialize()
-
-    await homePage.locators.temperatureBar.waitFor()
 
     const temperatureReading = await homePage.
         locators.temperatureBar.allInnerTexts()
@@ -34,26 +32,23 @@ test('assert customer shop sunscreens', async ({ page }) => {
     const [temperatureReadingNumber] = fetchNumFromString(temperatureReading)
     expect(temperatureReadingNumber).toBeGreaterThan(temperatureLowerBound)
 
-    // transitioning to sunscreen page
-    await homePage.
-        locators.sunscreenButton.click()
-    await page.waitForURL(router.sunscreens)
+    const sunscreenPage = await stateMachine.
+        transition('home', 'sunscreens') as IItemsPage
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
+    await sunscreenPage.initialize()
 
-    const itemsPage = new ItemListPage(page)
-    await itemsPage.initialize()
-
-    const [SPF50, SPF30] = await Promise.all(['SPF-50', 'SPF-30'].
-        map(itemName => itemsPage.cheapestItemSearchAddToCart(itemName)))
+    const [SPF50, SPF30] = await Promise.all(
+        (['SPF-30', 'SPF-50'] as [sunscreen, sunscreen]).
+            map(itemName => sunscreenPage.cheapestItemSearchAddToCart(itemName))
+    )
 
     await SPF50.addToCart.click()
 
     await SPF30.addToCart.click()
 
-    // transitioning to cart page
-    await itemsPage.locators.cart.click()
-    await page.waitForURL(router.cart)
-
-    const cartPage = new CartPage(page)
+    const cartPage = await stateMachine.
+        transition('sunscreens', 'cart') as ICartPage
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
     await cartPage.initialize()
 
     // check that cart contains two items + 1 for description
@@ -84,7 +79,7 @@ test('assert customer shop sunscreens', async ({ page }) => {
     await paymentIframe.locators.cardNumber.
         fill(paymentDetails.creditCardNumber)
     await paymentIframe.locators.expDate.
-        fill(paymentDetails.experationDate)
+        fill(paymentDetails.expirationDate)
     await paymentIframe.locators.CVC.fill(paymentDetails.CVC)
 
     // this could be a bug should be clarified with PO
@@ -95,6 +90,6 @@ test('assert customer shop sunscreens', async ({ page }) => {
     if (isZipCodePresent) await paymentIframe.locators.zipCode
         .fill(paymentDetails.zipCode)
 
-    await paymentIframe.locators.payButton.click()
-    await page.waitForURL(router.confirmation)
+    await stateMachine.transition('cart', 'confirmation')
+    await expect(page.url()).toEqual(stateMachine.getCurrentState())
 })
