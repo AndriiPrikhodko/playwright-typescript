@@ -1,14 +1,12 @@
 import { test, expect } from '@playwright/test'
 import StateMachine from '@book/transitions/stateMachine'
 import { fetchNumFromString } from '@utils/text-processor'
-
-import * as data from '@test-data/generated/payment-details.ts.json'
+import {default as testData} 
+    from '@test-data/generated/payment-details.ts.json'
 import { ICartPage, IHomePage, IItemsPage } from '@myTypes/book'
-import { type IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default as IDataPaymentValid
 const temperatureUpperBound = 19
-
+const {default: paymentDetails} = testData
 /**
  * Given customer on https://weathershopper.pythonanywhere.com/
  * When checks the temperature and it is below 19 degrees
