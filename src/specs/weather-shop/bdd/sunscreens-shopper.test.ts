@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test'
 import  StateMachine from '@book/transitions/stateMachine'
 import { fetchNumFromString } from '@utils/text-processor'
-import * as data from '@test-data/generated/payment-details.ts.json'
+import {default as testData} 
+    from '@test-data/generated/payment-details.ts.json'
 import {
     IHomePage,
     IItemsPage,
@@ -9,7 +10,7 @@ import {
 } from '@myTypes/book'
 import { IDataPaymentValid } from '@myTypes/data'
 
-const paymentDetails = data.default.default as IDataPaymentValid
+const {default: paymentDetails} = testData
 const temperatureLowerBound = 34
 type sunscreen = 'SPF-50' | 'SPF-30'
 
